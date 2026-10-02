@@ -1,3 +1,4 @@
+import type { ComponentProps } from 'react';
 import { Link, router } from 'expo-router';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -40,9 +41,9 @@ export default function Carrito() {
         </Pressable>
 
         <Link href="/carrito/nota" asChild>
-          <Pressable style={[estilos.boton, estilos.botonSecundario]}>
+          <BotonDeLink>
             <Text style={estilos.botonSecundarioTexto}>Agregar nota para la cocina</Text>
-          </Pressable>
+          </BotonDeLink>
         </Link>
 
         {/* Confirmar pedido abre el modal de confirmación (/confirmar);
@@ -59,6 +60,21 @@ export default function Carrito() {
 
       <DondeEstoy />
     </View>
+  );
+}
+
+/**
+ * Wrapper para usar como hijo de <Link asChild>. El problema de F5a es que
+ * <Slot> no sabe combinar un array de estilos que le llegue directo en el
+ * hijo; acá lo resolvemos ANTES, con StyleSheet.flatten, así <Slot> recibe
+ * un solo objeto de estilos, no un array.
+ */
+function BotonDeLink({ style, ...resto }: ComponentProps<typeof Pressable>) {
+  return (
+    <Pressable
+      {...resto}
+      style={StyleSheet.flatten([estilos.boton, estilos.botonSecundario, style])}
+    />
   );
 }
 
